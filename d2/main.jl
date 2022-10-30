@@ -1,5 +1,6 @@
 # naive beginnings
-println("hello, world!")
+# https://adventofcode.com/2019/day/2
+println("see https://adventofcode.com/2019/day/2")
 
 function load(name)
     p = Dict()
