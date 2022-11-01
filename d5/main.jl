@@ -4,17 +4,15 @@ using IntCode
 echo = IntCode.load("echo")
 input = IntCode.load("input")
 
-function run(orig)
+function run(orig, fn::Function)
     p = copy(orig)
-    IntCode.exec(p)
+    IntCode.exec(p, fn)
 end
 
-IntCode.set_input(1)
-accum = run(input)
+accum = run(input, () -> 1)
 println("accum $accum")
 println("part1: final output should be 13787043")
-IntCode.set_input(5)
-println(run(input))
+println(run(input, () -> 5))
 println("part2: final output should be 3892695")
 
 println("done")
