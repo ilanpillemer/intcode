@@ -9,9 +9,7 @@ function get_input(xs)
 end
 
 function part1()
-    res = 0
     signals = []
-    phase_setting = ""
     for x in permutations([0, 1, 2, 3, 4])
         i = x[1]
         j = x[2]
