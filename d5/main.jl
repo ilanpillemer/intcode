@@ -10,10 +10,11 @@ function run(orig)
 end
 
 IntCode.set_input(1)
-run(input)
+accum = run(input)
+println("accum $accum")
 println("part1: final output should be 13787043")
 IntCode.set_input(5)
-run(input)
+println(run(input))
 println("part2: final output should be 3892695")
 
 println("done")

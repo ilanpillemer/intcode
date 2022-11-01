@@ -8,6 +8,7 @@ function run(orig, x, y)
     p[1] = x
     p[2] = y
     IntCode.exec(p)
+    p[0]
 end
 
 function run2(orig)
