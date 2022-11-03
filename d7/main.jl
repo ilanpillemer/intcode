@@ -102,7 +102,6 @@ function part2()
                 push!(signals, x)
             end
         end
-
     end
     maximum(signals)
 end
