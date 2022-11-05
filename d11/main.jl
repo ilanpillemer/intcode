@@ -61,9 +61,10 @@ function move(direction, x, y)
 
 end
 
-function part1(prog)
+function paint(prog, i)
     direction = up
     grid = DefaultDict(0)
+    grid[(0, 0)] = i
     in = Channel(Inf)
     out = Channel(Inf)
     x, y = 0, 0
@@ -78,7 +79,46 @@ function part1(prog)
         direction = rotate(direction, turn)
         (x, y) = move(direction, x, y)
     end
-    length(grid)
+    grid
 end
 
-println(part1(prog), " should be 2219")
+println(length(paint(prog, 0)), " should be 2219")
+
+
+function width(grid)
+    (minx, maxx) = (0, 0)
+    for (x, y) in keys(grid)
+        minx = x < minx ? x : minx
+        maxx = x > maxx ? x : maxx
+    end
+    return (minx, maxx)
+end
+
+
+function height(grid)
+    (miny, maxy) = (0, 0)
+    for (x, y) in keys(grid)
+        miny = y < miny ? y : miny
+        maxy = y > maxy ? y : maxy
+    end
+    return (miny, maxy)
+end
+
+function pp(grid)
+    (ax, bx) = width(grid)
+    (ay, by) = height(grid)
+
+    for y = by:-1:ay
+        f = (x) -> x == 0 ? " " : "#"
+        for x = ax:bx
+            print(f(grid[(x, y)]))
+        end
+        println()
+    end
+end
+
+
+grid = paint(prog, 1)
+pp(grid)
+
+println("grid should have painted the word HAFULAPE")
