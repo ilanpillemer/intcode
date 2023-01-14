@@ -7,13 +7,14 @@ s = [0, 1]
 w = [1, 0]
 e = [-1, 0]
 pos = [0, 0]
-directions = [n,s,w,e]
+directions = [n, s, w, e]
 supply = [-21, 21]
 input = IntCode.load("input")
 path = Set{Vector{Int64}}()
 walls = Set{Vector{Int64}}()
-update(pos, direct) =  pos + directions[direct]
+update(pos, direct) = pos + directions[direct]
 addwall(pos, direct) = push!(walls, pos + directions[direct])
+
 
 function pp(path, c)
     start = [0, 0]
@@ -38,9 +39,6 @@ function pp(path, c)
     end
 end
 
-
-
-
 function runonce()
     global pos = [0, 0]
     cin = Channel(Inf)
@@ -49,51 +47,40 @@ function runonce()
     prog = copy(input)
     schedule(@task IntCode.exec(prog, cout, cin, cquit))
     while isopen(cout)
-        try
-            move = rand(1:4)
-            # prefere somewhere not ever been
-            for i in [1:4]
-                opt1 = pos + n
-                opt2 = pos + s
-                opt3 = pos + w
-                opt4 = pos + e
-                if opt1 ∉ path && opt1 ∉ walls
-                    move = 1
-                end
-                if opt2 ∉ path && opt2 ∉ walls
-                    move = 2
-                end
-                if opt3 ∉ path && opt3 ∉ walls
-                    move = 3
-                end
-                if opt4 ∉ path && opt4 ∉ walls
-                    move = 4
-                end
+        #        try
+        move = rand(1:4)
+        # prefere somewhere not ever been
+        for i ∈ [1, 2, 3, 4]
+            opt = pos + directions[i]
+            if opt ∉ path && opt ∉ walls
+                move = i
             end
-            put!(cin, move)
-            x = take!(cout)
-            if (x == 1)
-                global pos = update(pos, move)
-                push!(path, pos)
-            end
-            if (x == 0)
-                addwall(pos, move)
-            end
-            if (x == 2)
-                global supply = pos
-                global pos = update(pos, move)
-                push!(path, pos)
-                close(cout)
-                println()
-                println(pos)
-                println("found oxygen supply at $pos")
-                pp(collect(path), "#")
-                println()
-
-            end
-        catch err
-            println(err)
         end
+        put!(cin, move)
+        x = take!(cout)
+        if (x == 1)
+            global pos = update(pos, move)
+            push!(path, pos)
+        end
+        if (x == 0)
+            addwall(pos, move)
+        end
+        if (x == 2)
+            global supply = pos
+            global pos = update(pos, move)
+            push!(path, pos)
+            close(cout)
+            println()
+            println(pos)
+            println("found oxygen supply at $pos")
+            pp(collect(path), "#")
+            println()
+
+        end
+        #        catch err
+        #            println(err)
+        #        end
+
     end
 end
 
