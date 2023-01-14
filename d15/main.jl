@@ -7,45 +7,13 @@ s = [0, 1]
 w = [1, 0]
 e = [-1, 0]
 pos = [0, 0]
+directions = [n,s,w,e]
 supply = [-21, 21]
 input = IntCode.load("input")
 path = Set{Vector{Int64}}()
 walls = Set{Vector{Int64}}()
-function update(pos, direct)
-    #println("received $pos and $direct")
-    if direct == 1
-        global pos = pos + n
-    end
-    if direct == 2
-        global pos = pos + s
-    end
-    if direct == 3
-        global pos = pos + w
-    end
-    if direct == 4
-        global pos = pos + e
-    end
-    #println("returned $pos")
-    pos
-end
-
-function addwall(pos, direct)
-    #println("received $pos and $direct")
-    if direct == 1
-        push!(walls, pos + n)
-    end
-    if direct == 2
-        push!(walls, pos + s)
-    end
-    if direct == 3
-        push!(walls, pos + w)
-    end
-    if direct == 4
-        push!(walls, pos + e)
-    end
-    #println("returned $pos")
-    pos
-end
+update(pos, direct) =  pos + directions[direct]
+addwall(pos, direct) = push!(walls, pos + directions[direct])
 
 function pp(path, c)
     start = [0, 0]
