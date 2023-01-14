@@ -25,48 +25,7 @@ function update(pos, direct)
     #println("returned $pos")
     pos
 end
-#Accept a movement command via an input instruction.
-#Send the movement command to the repair droid.
-#Wait for the repair droid to finish the movement operation.
-#Report on the status of the repair droid via an output instruction.
 
-
-
-
-in = Channel(Inf)
-out = Channel(Inf)
-quit = Channel(Inf)
-input = IntCode.load("input")
-prog = copy(input)
-
-schedule(@task IntCode.exec(prog, out, in, quit))
-while isopen(out)
-    try
-        move = rand(1:4)
-        put!(in, move)
-        x = take!(out)
-        if (x == 1)
-            global pos = update(pos, move)
-            push!(path, pos)
-        end
-        if (x == 2)
-            global pos = update(pos, move)
-            push!(path, pos)
-            close(out)
-            println()
-            println(pos)
-
-
-
-        end
-        #print("$x $pos")
-        #println()
-    catch err
-        println(err)
-    end
-end
-println("final path")
-#println(path)
 function pp(path)
     start = [0, 0]
     X = [18, -16]
@@ -81,7 +40,7 @@ function pp(path)
                 print("X")
                 continue
             end
-            if v in collect(path)
+            if v in path
                 print("#")
             else
                 print(" ")
@@ -91,4 +50,33 @@ function pp(path)
     end
 end
 
-pp(path)
+cin = Channel(Inf)
+cout = Channel(Inf)
+cquit = Channel(Inf)
+input = IntCode.load("input")
+prog = copy(input)
+
+schedule(@task IntCode.exec(prog, cout, cin, cquit))
+while isopen(cout)
+    try
+        move = rand(1:4)
+        put!(cin, move)
+        x = take!(cout)
+        if (x == 1)
+            global pos = update(pos, move)
+            push!(path, pos)
+        end
+        if (x == 2)
+            global pos = update(pos, move)
+            push!(path, pos)
+            close(cout)
+            println()
+            println(pos)
+            println("found oxygen supply at $pos")
+            pp(collect(path))
+        end
+    catch err
+        println(err)
+    end
+end
+println("final path")
