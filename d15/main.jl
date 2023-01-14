@@ -18,8 +18,8 @@ addwall(pos, direct) = push!(walls, pos + directions[direct])
 
 function pp(path, c)
     start = [0, 0]
-    for y = -25:25
-        for x = -25:25
+    for y ∈ -25:25
+        for x ∈ -25:25
             v = [x, y]
             if v == start
                 print("0")
@@ -47,10 +47,9 @@ function runonce()
     prog = copy(input)
     schedule(@task IntCode.exec(prog, cout, cin, cquit))
     while isopen(cout)
-        #        try
         move = rand(1:4)
-        # prefere somewhere not ever been
-        for i ∈ [1, 2, 3, 4]
+        # prefer somewhere not ever been
+        for i ∈ 1:4
             opt = pos + directions[i]
             if opt ∉ path && opt ∉ walls
                 move = i
@@ -77,10 +76,6 @@ function runonce()
             println()
 
         end
-        #        catch err
-        #            println(err)
-        #        end
-
     end
 end
 
@@ -97,46 +92,27 @@ supply = [18, -16]
 oxy = Set{Vector{Int64}}()
 push!(oxy, supply)
 push!(path, [0, 0])
-println("final walls")
-println("path")
-#println(path)
-println("walls")
-#println(walls)
 pp(walls, "W")
 println()
 pp(path, ".")
-pp(oxy, "0")
 
 function repair(path, oxy)
     toAdd = Set{Vector{Int64}}()
     for el in oxy
-        for x in [1:4]
-            opt1 = el + n
-            opt2 = el + s
-            opt3 = el + w
-            opt4 = el + e
-            if opt1 in path
-                push!(toAdd, opt1)
-                delete!(path, opt1)
+        for i ∈ 1:4
+            opt = el + directions[i]
+            if opt in path
+                push!(toAdd, opt)
+                delete!(path, opt)
             end
-            if opt2 in path
-                push!(toAdd, opt2)
-                delete!(path, opt2)
-            end
-            if opt3 in path
-                push!(toAdd, opt3)
-                delete!(path, opt3)
-            end
-            if opt4 in path
-                push!(toAdd, opt4)
-                delete!(path, opt4)
-            end
-            delete!(path, el)
         end
+        delete!(path, el)
     end
+
     for el in toAdd
         push!(oxy, el)
     end
+
 end
 
 count = 0
